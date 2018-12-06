@@ -1,5 +1,6 @@
 import unittest
 import collections
+import string
 
 
 class TestCollections(unittest.TestCase):
@@ -248,32 +249,102 @@ class TestCollections(unittest.TestCase):
         with self.assertRaises(TypeError):
             collections.Counter.update()
 
+
+    """
+    Testing empty input values
+    Testing very long input strings and high values
+    """
     def test_blackBox_init(self):
-        """
-        Testing empty input values
-        Testing very long input strings and high values
 
-        """
-
+        "Testing init with empty inputs"
         self.assertEqual(collections.Counter(), collections.Counter(''))
         self.assertEqual(collections.Counter(), collections.Counter(None))
+        self.assertEqual(collections.Counter(), collections.Counter({}))
+
+        "Testing negative values"
+        self.assertEqual(collections.Counter(a = -1).most_common(), [('a', -1)])
+        self.assertEqual(collections.Counter({'a': -1}).most_common(), [('a', -1)])
+
+        "Testing init with large inputs"
         self.assertEqual(collections.Counter({'a': 99999999999, 'b': 1}).most_common(2), [('a', 99999999999), ('b', 1)])
         self.assertEqual(collections.Counter({'a': 99999999999, 'b': 1}), collections.Counter(a = 99999999999, b = 1))
         self.assertEqual(collections.Counter({'a': 99999999999, 'b': 99999999999}), collections.Counter(a = 99999999999, b = 99999999999))
         "The test below is not nice, it takes 6 seconds on my computer."
-        "Shows you can create a string with very long length though"
+        "Should probably load string from file to make it faster"
         #self.assertEqual(collections.Counter({'a': 9999999, 'b': 1}), collections.Counter("a" * 9999999 + "b"))
+
+
 
     "This function only returns 0 so I will not test it..."
     #def test_blackbox_missing(self):
     #   self.assertEqual()
 
-    "To be implemented"
-    def test_blackbox_update(self):
-        self.assertEqual(1,1)
 
-    "To be implemented"
+    "Testing with none and large values"
+    def test_blackbox_update(self):
+        testData = collections.Counter()
+        testDataTwo = collections.Counter()
+
+        "Testing updating with empty values"
+        testDataTwo.update()
+        self.assertEqual(testData,testDataTwo)
+        testDataTwo.update(None)
+        self.assertEqual(testData,testDataTwo)
+        testDataTwo.update({})
+        self.assertEqual(testData,testDataTwo)
+        testDataTwo.update("")
+        self.assertEqual(testData,testDataTwo)
+
+        "Testing negative values"
+        testData.update(a = 2)
+        self.assertEqual(testData.most_common(), [('a', 2)])
+        testData.update(a = -2)
+        testDataTwo.update(a = 0)
+        self.assertEqual(testData,testDataTwo)
+
+        "Testing updating with large values"
+        testData.update({'a': 99999999999, 'b': 1})
+        testDataTwo = collections.Counter(a = 99999999999, b = 1)
+        self.assertEqual(testData, testDataTwo)
+        testData = collections.Counter()
+        testData.update(a = 99999999999, b = 1)
+        self.assertEqual(testData, testDataTwo)
+        "This test also takes too long to compute. Will keep it in brackets"
+        "Should probably load string from file to make it faster"
+        #testData = collections.Counter()
+        #testDataTwo = collections.Counter(a = 9999999, b = 1)
+        #testData.update("a" * 9999999 + "b")
+        #self.assertEqual(testData, testDataTwo)
+
+
+    "Testing with empty Counter, small values, negative values, large values and large amount of values"
     def test_blackbox_most_common(self):
-        self.assertEqual(1,1)
+        "Testing with Empty Counter"
+        testData = collections.Counter()
+        self.assertEqual(testData.most_common(), [])
+
+        "Testing with small values"
+        testData.update(a = 2, b = 1)
+        self.assertEqual(testData.most_common(), [('a', 2), ('b', 1)])
+        self.assertEqual(testData.most_common(1), [('a', 2)])
+
+        "Testing with negative values"
+        testData = collections.Counter(a = -2, b = -1)
+        self.assertEqual(testData.most_common(), [('b', -1), ('a', -2)])
+        self.assertEqual(testData.most_common(1), [('b', -1)])
+
+        "Testing with large values"
+        testData.update(a = 100000000003, b = 94)
+        self.assertEqual(testData.most_common(), [('a', 100000000001), ('b', 93)])
+        self.assertEqual(testData.most_common(1), [('a', 100000000001)])
+
+        "Testing with large amount of values"
+        testData = collections.Counter(string.printable)
+        for i in range(1,100):
+            testData.update(string.printable)
+        self.assertEqual(testData.most_common(1), [('\x0c', 100)])
+        testData.update('a')
+        self.assertEqual(testData.most_common(1), [('a', 101)])
+
 if __name__ == '__main__':
     unittest.main()
