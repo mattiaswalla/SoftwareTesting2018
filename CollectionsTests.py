@@ -346,5 +346,15 @@ class TestCollections(unittest.TestCase):
         testData.update('a')
         self.assertEqual(testData.most_common(1), [('a', 101)])
 
+    def test_copy(self):
+        testData = collections.Counter(["a", "b", "c"])
+        copyData = collections.Counter.copy(testData)
+        self.assertEqual(testData, copyData)
+        self.assertEqual(copyData, {"a": 1, "b": 1, "c": 1})
+        with self.assertRaises(TypeError):
+            b = collections.Counter.copy({"q": 1, "w": 2, "e": 3})
+            a = collections.Counter.copy(["q", "w", "e"])
+
+        
 if __name__ == '__main__':
     unittest.main()
