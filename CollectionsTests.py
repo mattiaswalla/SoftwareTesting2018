@@ -355,6 +355,72 @@ class TestCollections(unittest.TestCase):
             b = collections.Counter.copy({"q": 1, "w": 2, "e": 3})
             a = collections.Counter.copy(["q", "w", "e"])
 
-        
+    "Testing the __add__ function in Update. Not testing negative values as documentation states it doesn't work"
+    def test_add(self):
+        "Simple test"
+        testData = collections.Counter('aab') + collections.Counter('bcc')
+        self.assertEqual(testData, collections.Counter('aabbcc'))
+
+        "Testing with empty Counters"
+        testData = collections.Counter('') + collections.Counter('')
+        self.assertEqual(testData, collections.Counter(''))
+
+        "Testing with large values"
+        testData = collections.Counter({'a': 99999999999, 'b': 1}) + collections.Counter({'a': 99999999999, 'b': 1})
+        self.assertEqual(testData, collections.Counter({'a': 2*99999999999, 'b': 2}))
+
+        "Testing the __sub__ function."
+    def test_sub(self):
+        "Simple test"
+        testData = collections.Counter('aab') - collections.Counter('bcc')
+        self.assertEqual(testData, collections.Counter('aa'))
+
+        "Testing with empty Counters"
+        testData = collections.Counter('') - collections.Counter('')
+        self.assertEqual(testData, collections.Counter(''))
+
+        "Testing with large values"
+        testData = collections.Counter({'a': 99999999999, 'b': 1}) - collections.Counter({'a': 555555555, 'b': 1})
+        self.assertEqual(testData, collections.Counter({'a': 99999999999-555555555}))
+
+        "Testing removing large value"
+        testData = collections.Counter('') - collections.Counter({'a': 99999999999, 'b': 1})
+        self.assertEqual(testData, collections.Counter(''))
+
+        "Testing the | (or) function in the Update function"
+    def test_or(self):
+        "Simple test"
+        testData = collections.Counter('aab') | collections.Counter('bcc')
+        self.assertEqual(testData, collections.Counter('aabcc'))
+
+        "Testing with emply Counters"
+        testData = collections.Counter('') | collections.Counter('')
+        self.assertEqual(testData, collections.Counter(''))
+
+        "Testing large values"
+        testData = collections.Counter({'a': 99999999999, 'b': 1}) | collections.Counter({'a': 555555555, 'b': 55555555})
+        self.assertEqual(testData, collections.Counter({'a':99999999999 ,'b':55555555}))
+
+        "Testing negative value"
+        testData = collections.Counter({'a': -1}) | collections.Counter('')
+        self.assertEqual(testData, collections.Counter(''))
+
+        "Testing the & (and) function in Update"
+    def test_and(self):
+        "Simple test"
+        testData = collections.Counter('aab') & collections.Counter('bcc')
+        self.assertEqual(testData, collections.Counter('b'))
+
+        "Testing with emply Counters"
+        testData = collections.Counter('') & collections.Counter('')
+        self.assertEqual(testData, collections.Counter(''))
+
+        "Testing large values"
+        testData = collections.Counter({'a': 99999999999, 'b': 1}) & collections.Counter({'a': 555555555, 'b': 55555555})
+        self.assertEqual(testData, collections.Counter({'a':555555555 ,'b':1}))
+
+        "Testing negative value"
+        testData = collections.Counter({'a': -1}) & collections.Counter('')
+        self.assertEqual(testData, collections.Counter(''))
 if __name__ == '__main__':
     unittest.main()
