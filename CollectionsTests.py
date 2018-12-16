@@ -422,5 +422,88 @@ class TestCollections(unittest.TestCase):
         "Testing negative value"
         testData = collections.Counter({'a': -1}) & collections.Counter('')
         self.assertEqual(testData, collections.Counter(''))
+
+    # function not implemented, so will not test
+    # def test_from_keys(self):
+
+    def test_elements(self):
+        "Simple test"
+        c = collections.Counter('ABCABC')
+        self.assertEqual(sorted(c.elements()), ['A', 'A', 'B', 'B', 'C', 'C'])
+
+        "Testing with emply Counters"
+        c = collections.Counter('')
+        self.assertEqual(sorted(c.elements()), [])
+
+        "Testing with large values"
+        str = ""
+        lst =[]
+        for i in range(1000):
+            str += 'A'
+            lst.append('A')
+        c = collections.Counter(str)
+        self.assertEqual(sorted(c.elements()), lst)
+
+        "Testing negative values"
+        c = collections.Counter('ABCABC', D=0, E=-1)
+        self.assertEqual(sorted(c.elements()), ['A', 'A', 'B', 'B', 'C', 'C'])
+
+    def test_update(self):
+        "Testing init with empty inputs"
+        c = collections.Counter()
+        c.update('')
+        self.assertEqual(collections.Counter(), c)
+        c.update(None)
+        self.assertEqual(collections.Counter(), c)
+        c.update({})
+        self.assertEqual(collections.Counter(), c)
+
+        "Testing negative values"
+        c.update(['a'])
+        self.assertEqual(c.most_common(), [('a', 1)])
+        c.update(a=-1)
+        self.assertEqual(c.most_common(), [('a', 0)])
+        c.update({'a': -1})
+        self.assertEqual(c.most_common(), [('a', -1)])
+
+        "Testing init with large inputs"
+        c.update({'a': 99999999999, 'b': 1})
+        self.assertEqual(c.most_common(2),
+                         [('a', 99999999998), ('b', 1)])
+        c.update(b=99999999999, a=2)
+        self.assertEqual(c, collections.Counter(a=100000000000, b=100000000000))
+
+
+    def test_subtract(self):
+        
+        "Testing init with empty inputs"
+        c = collections.Counter()
+        c.subtract('')
+        self.assertEqual(collections.Counter(), c)
+        c.subtract(None)
+        self.assertEqual(collections.Counter(), c)
+        c.subtract({})
+        self.assertEqual(collections.Counter(), c)
+
+        "Testing negative values"
+        c.subtract(['a'])
+        self.assertEqual(c.most_common(), [('a', -1)])
+        c.subtract(a=-1)
+        self.assertEqual(c.most_common(), [('a', 0)])
+        c.subtract({'a': -1})
+        self.assertEqual(c.most_common(), [('a', 1)])
+
+        "Testing init with large inputs"
+        c.subtract({'a': 99999999999, 'b': 1})
+        self.assertEqual(c.most_common(2),
+                         [('b', -1), ('a', -99999999998)])
+        c.subtract(b=99999999999, a=2)
+        self.assertEqual(c, collections.Counter(a=-100000000000, b=-100000000000))
+
+
+"""
+
+   subtract - Mattias
+"""
 if __name__ == '__main__':
     unittest.main()
