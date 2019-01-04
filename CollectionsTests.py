@@ -1,7 +1,7 @@
 import unittest
 import collections
 import string
-
+import coverage
 
 class TestCollections(unittest.TestCase):
 
@@ -475,7 +475,7 @@ class TestCollections(unittest.TestCase):
 
 
     def test_subtract(self):
-        
+
         "Testing init with empty inputs"
         c = collections.Counter()
         c.subtract('')
@@ -506,4 +506,10 @@ class TestCollections(unittest.TestCase):
    subtract - Mattias
 """
 if __name__ == '__main__':
+    cov = coverage.Coverage()
+    cov.start()
     unittest.main()
+    cov.stop()
+    cov.save()
+
+    cov.html_report()
