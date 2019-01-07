@@ -273,6 +273,10 @@ class TestCollections(unittest.TestCase):
         "Should probably load string from file to make it faster"
         #self.assertEqual(collections.Counter({'a': 9999999, 'b': 1}), collections.Counter("a" * 9999999 + "b"))
 
+        "To many arguments"
+        with self.assertRaises(TypeError):
+            counter = collections.Counter([],{})
+
 
 
     "This function only returns 0 so I will not test it..."
@@ -369,6 +373,9 @@ class TestCollections(unittest.TestCase):
         testData = collections.Counter({'a': 99999999999, 'b': 1}) + collections.Counter({'a': 99999999999, 'b': 1})
         self.assertEqual(testData, collections.Counter({'a': 2*99999999999, 'b': 2}))
 
+        "Testing with different type"
+        self.assertEquals(testData.__add__(dict()), NotImplemented)
+
         "Testing the __sub__ function."
     def test_sub(self):
         "Simple test"
@@ -386,6 +393,14 @@ class TestCollections(unittest.TestCase):
         "Testing removing large value"
         testData = collections.Counter('') - collections.Counter({'a': 99999999999, 'b': 1})
         self.assertEqual(testData, collections.Counter(''))
+
+        "Testing with different type"
+        self.assertEquals(testData.__sub__(dict()), NotImplemented)
+
+        "testing with negative input"
+        testData = collections.Counter('') - collections.Counter({'a': -1})
+        self.assertEqual(testData, collections.Counter({'a': 1}))
+
 
         "Testing the | (or) function in the Update function"
     def test_or(self):
@@ -405,6 +420,9 @@ class TestCollections(unittest.TestCase):
         testData = collections.Counter({'a': -1}) | collections.Counter('')
         self.assertEqual(testData, collections.Counter(''))
 
+        "Testing with different type"
+        self.assertEquals(testData.__or__(dict()), NotImplemented)
+
         "Testing the & (and) function in Update"
     def test_and(self):
         "Simple test"
@@ -423,8 +441,14 @@ class TestCollections(unittest.TestCase):
         testData = collections.Counter({'a': -1}) & collections.Counter('')
         self.assertEqual(testData, collections.Counter(''))
 
+        "Testing with different type"
+        self.assertEquals(testData.__and__(dict()), NotImplemented)
+
     # function not implemented, so will not test
-    # def test_from_keys(self):
+    def test_from_keys(self):
+        c = collections.Counter('ABCABC')
+        with self.assertRaises(NotImplementedError):
+            c.fromkeys(None)
 
     def test_elements(self):
         "Simple test"
@@ -500,10 +524,9 @@ class TestCollections(unittest.TestCase):
         c.subtract(b=99999999999, a=2)
         self.assertEqual(c, collections.Counter(a=-100000000000, b=-100000000000))
 
+        "To many arguments"
+        with self.assertRaises(TypeError):
+            c.subtract([], {})
 
-"""
-
-   subtract - Mattias
-"""
 if __name__ == '__main__':
     unittest.main()
